@@ -1,45 +1,18 @@
 const mongoose = require('mongoose');
 mongoose.connect('mongodb+srv://erol:erol@nodecourse.mdb7j.mongodb.net/musicStore?retryWrites=true&w=majority')
-    .then(() => console.log('Connected to mongodb'))
+    .then(() => ('Connected to mongodb'))
     .catch(err => console.error('Could not connect to MongoDB ...', err));
 
 const express = require('express');
 const router = express.Router();
 
-const fetch = require('node-fetch');
-
-const viewSchema = new mongoose.Schema(
-    {
-        collectionName: {
-            type: String,
-            required: true,
-            minlength: 5,
-            maxlength: 255,
-        },
-        comment: {
-            type: String,
-            required: true,
-            minlength: 5,
-            maxlength: 255,
-        },
-        liked: {
-            type: String,
-            required: true,
-            minlength: 1,
-            maxlength: 1,
-        },
-
-    }
-);
-
-
-const View = mongoose.model('comments', viewSchema);
+const {ViewModel} = require('../model/viewModel');
 
 
 router.get('/views', async (req, res) => {
     const collectionName = req.query.collectionName;
 
-    const views = await View
+    const views = await ViewModel
         .find({ collectionName: collectionName });
 
     res.send(views);
@@ -49,21 +22,7 @@ router.get('/add', async (req, res) => {
     const collectionName = req.query.collectionName;
     const newComment = req.query.newComment;
 
-    const view = new View({
-        collectionName: collectionName,
-        comment: newComment,
-        liked: "0"
-    });
-    await view.save();
-    res.send(view);
-
-});
-
-router.get('/add', async (req, res) => {
-    const collectionName = req.query.collectionName;
-    const newComment = req.query.newComment;
-
-    const view = new View({
+    const view = new ViewModel({
         collectionName: collectionName,
         comment: newComment,
         liked: "0"
@@ -79,7 +38,7 @@ router.get('/toggleLike', async (req, res) => {
     const liked = req.query.liked;
 
 
-    const updateComment = await View.findOneAndUpdate({ collectionName: collectionName, comment: comment },
+    const updateComment = await ViewModel.findOneAndUpdate({ collectionName: collectionName, comment: comment },
         {
             collectionName: collectionName,
             comment: comment,
@@ -97,7 +56,7 @@ router.get('/update', async (req, res) => {
     const liked = req.query.liked;
 
 
-    const updateComment = await View.findOneAndUpdate({ collectionName: collectionName, comment: oldComment },
+    const updateComment = await ViewModel.findOneAndUpdate({ collectionName: collectionName, comment: oldComment },
         {
             collectionName: collectionName,
             comment: newComment,
