@@ -22,6 +22,9 @@ router.get('/add', async (req, res) => {
     const collectionName = req.query.collectionName;
     const newComment = req.query.newComment;
 
+    console.log('collectionName ', collectionName);
+    console.log('newComment ', newComment);
+
     const view = new ViewModel({
         collectionName: collectionName,
         comment: newComment,
